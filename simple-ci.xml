@@ -1,0 +1,12 @@
+<?xml?>
+<pipeline image="maven:3.3.9-jdk-8">
+	<task id="build" name="Build">
+		mvn verify -Dmaven.test.skip=true
+	</task>
+	<task id="test" dependsOn="build" name="Test">
+		mvn surefire:test
+	</task>
+	<task id="deployNonProd" dependsOn="test" branch="^!(master|develop)$" name="Deploy (non-prod)">
+		mvn artifactory:publish
+	</task>
+</pipeline>

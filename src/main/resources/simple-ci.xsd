@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="https://yaggle.co/SIMPLECI/1.0.0"
+            elementFormDefault="qualified">
+
+	<xsd:element name="pipeline">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="task" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:simpleContent>
+							<xsd:extension base="xsd:string">
+								<xsd:attribute name="id" type="xsd:ID" use="required"/>
+								<xsd:attribute name="dependsOn" type="xsd:IDREFS" use="optional"/>
+								<xsd:attribute name="branch" type="xsd:string" use="optional"/>
+								<xsd:attribute name="name" type="xsd:string" use="optional"/>
+							</xsd:extension>
+						</xsd:simpleContent>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="image" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

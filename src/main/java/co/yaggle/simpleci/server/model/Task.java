@@ -15,16 +15,20 @@ import static org.apache.commons.lang3.StringUtils.*;
 public class Task {
 
     @Builder
-    private Task(String id, String branch, List<String> commands, List<Task> nextTasks) {
+    private Task(String id, String name, String branch, List<String> commands, List<Task> nextTasks) {
         checkArgument(!isBlank(id));
+        checkArgument(!isBlank(name));
 
         this.id = id;
+        this.name = name;
         this.branch = branch;
         this.commands = ImmutableList.copyOf(checkNotNull(commands));
         this.nextTasks = ImmutableList.copyOf(checkNotNull(nextTasks));
     }
 
     private String id;
+
+    private String name;
 
     private String branch;
 

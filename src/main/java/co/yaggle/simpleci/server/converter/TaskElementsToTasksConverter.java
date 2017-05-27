@@ -41,14 +41,14 @@ public class TaskElementsToTasksConverter {
         List<Task> tasks = new ArrayList<>();
 
         do {
-            // Get all the unprocessed task elements that don't depend on other unprocessed tasks
+            // Get all the unprocessed tasks that aren't depended on by any other unprocessed tasks (i.e. work backwards)
             List<TaskElement> elementsToProcess = unprocessedTaskElementsById
                     .values()
                     .stream()
-                    .filter(taskElement -> taskElement
-                            .getDependsOn()
+                    .filter(taskElement -> unprocessedTaskElementsById
+                            .values()
                             .stream()
-                            .noneMatch(unprocessedTaskElementsById::containsKey))
+                            .noneMatch(otherTaskElement -> otherTaskElement.getDependsOn().contains(taskElement.getId())))
                     .collect(Collectors.toList());
 
             // If there aren't any such elements, despite there being unprocessed tasks, there must be a cyclic dependency.
@@ -60,6 +60,7 @@ public class TaskElementsToTasksConverter {
                 Task task = Task
                         .builder()
                         .id(taskElement.getId())
+                        .name(taskElement.getName())
                         .branch(taskElement.getBranch())
                         .commands(taskElement.getCommands())
                         .nextTasks(new ArrayList<>(processedTasksByPreviousTaskId.get(taskElement.getId())))

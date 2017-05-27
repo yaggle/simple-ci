@@ -22,13 +22,13 @@ public class ConfigFileReader {
      *
      * @param rootProjectDirectory the project's root directory
      * @return the project's build configuration
-     * @throws SAXException if the build configuration's XML is not valid
-     * @throws IOException if an error occurred while reading the build configuration file
+     * @throws SAXException                      if the build configuration's XML is not valid
+     * @throws IOException                       if an error occurred while reading the build configuration file
      * @throws MissingConfigurationFileException if the project doesn't have a build configuration file
-     * @throws CyclicTaskDependencyException if there are cyclic tasks in the build configuration file
-     * @throws DuplicateDependencyException if one or more of the build configuration's tasks depends on the same task more than once
+     * @throws CyclicTaskDependencyException     if there are cyclic tasks in the build configuration file
+     * @throws DuplicateDependencyException      if one or more of the build configuration's tasks depends on the same task more than once
      */
-    public Pipeline getBuildConfiguration(File rootProjectDirectory) throws SAXException, IOException, MissingConfigurationFileException, CyclicTaskDependencyException, DuplicateDependencyException {
+    public static Pipeline getBuildConfiguration(File rootProjectDirectory) throws SAXException, IOException, MissingConfigurationFileException, CyclicTaskDependencyException, DuplicateDependencyException {
         validatePipeline(rootProjectDirectory);
         PipelineElement pipelineElement = parsePipeline(rootProjectDirectory);
         List<Task> tasks = taskElementsToTasks(pipelineElement.getTasks());

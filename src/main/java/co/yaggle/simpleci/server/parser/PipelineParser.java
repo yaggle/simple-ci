@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static co.yaggle.simpleci.server.exception.UnexpectedException.Type.*;
-import static co.yaggle.simpleci.server.util.StringUtil.*;
 import static co.yaggle.simpleci.server.util.XmlUtil.*;
 import static javax.xml.XMLConstants.*;
 import static org.apache.commons.lang3.StringUtils.*;
@@ -101,13 +100,18 @@ public class PipelineParser {
 
     private static TaskElement toTaskElement(Element element) {
         String id = trimToNull(element.getAttribute(ID_ATTR));
-        List<String> dependsOn = Stream.of(element.getAttribute(DEPENDS_ON_ATTR).split(" ")).collect(Collectors.toList());
+        String name = trimToNull(element.getAttribute(NAME_ATTR));
+        List<String> dependsOn = Stream
+                .of(element.getAttribute(DEPENDS_ON_ATTR).split("\\s+"))
+                .filter(otherTaskId -> !otherTaskId.isEmpty())
+                .collect(Collectors.toList());
         String branch = trimToNull(element.getAttribute(BRANCH_ATTR));
-        List<String> commands = withoutBlankLines(withoutIndent(textLinesInside(element)));
+        List<String> commands = textLinesInside(element);
 
         return TaskElement
                 .builder()
                 .id(id)
+                .name(name)
                 .dependsOn(dependsOn)
                 .branch(branch)
                 .commands(commands)
@@ -118,6 +122,7 @@ public class PipelineParser {
     private static final String CONFIG_FILENAME = "simple-ci.xml";
     private static final String SCHEMA_FILENAME = "/simple-ci.xsd";
     private static final String ID_ATTR = "id";
+    private static final String NAME_ATTR = "name";
     private static final String IMAGE_ATTR = "image";
     private static final String BRANCH_ATTR = "branch";
     private static final String DEPENDS_ON_ATTR = "dependsOn";

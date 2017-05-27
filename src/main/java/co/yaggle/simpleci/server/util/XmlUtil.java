@@ -42,14 +42,17 @@ public class XmlUtil {
 
 
     /**
-     * Get the lines of text inside the element.
+     * Get the lines of text inside the element, trimming blank space around them
+     * and omitting blank lines.
      *
-     * @param element
-     * @return
+     * @param element an element
+     * @return the lines of text inside the element
      */
     public static List<String> textLinesInside(Element element) {
         return new BufferedReader(new StringReader(element.getTextContent()))
                 .lines()
+                .map(String::trim)
+                .filter(line -> !line.isEmpty())
                 .collect(Collectors.toList());
     }
 }

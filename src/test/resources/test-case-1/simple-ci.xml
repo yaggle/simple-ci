@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<pipeline image="node:7.10.0"
+          xmlns="https://yaggle.co/SIMPLECI/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="https://yaggle.co/SIMPLECI/1.0.0 https://yaggle.co/xsd/simple-ci-1.0.0.xsd">
+
+	<task id="install" name="Install">
+		yarn
+	</task>
+
+	<task id="eslint" dependsOn="install" name="ES Lint">
+		npm run eslint
+	</task>
+
+	<task id="sasslint" dependsOn="install" name="Sass Lint">
+		npm run sasslint
+	</task>
+
+	<task id="preCompileTest" dependsOn="install" name="Pre-compile Test">
+		npm run test-source
+	</task>
+
+	<task id="compile" dependsOn="install" name="Compile">
+		npm run build
+	</task>
+
+	<task id="postCompileTest" dependsOn="compile" name="Post-compile Test">
+		npm run test-bundle
+	</task>
+
+	<task id="uploadArtifacts" dependsOn="eslint sasslint preCompileTest postCompileTest" branch="^(master|develop|qa)$" name="Upload artifacts">
+		tar zcf mylib-$GIT_HASH.tar.gz dist
+		scp -i $PRIVATE_KEY_PATH mylib-$GIT_HASH.tar.gz artifacts@upload.example.com
+	</task>
+
+	<task id="deployNonProd" dependsOn="uploadArtifacts" branch="^(develop|qa)$" name="Deploy (non-prod)">
+		./deploy.sh
+	</task>
+
+	<task id="deployProd" dependsOn="uploadArtifacts" branch="^master$" name="Deploy to prod">
+		./deploy-prod.sh
+	</task>
+
+</pipeline>

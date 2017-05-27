@@ -15,6 +15,9 @@ public class TaskElement {
     @NonNull
     private String id;
 
+    @NonNull
+    private String name;
+
     private List<String> dependsOn;
 
     private String branch;

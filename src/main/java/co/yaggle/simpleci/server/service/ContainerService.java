@@ -61,13 +61,26 @@ public class ContainerService {
      * @throws IOException          if an output stream I/O error occurs
      */
     public String execCommand(String containerId, String command, OutputStream stdout, OutputStream stderr) throws DockerException, InterruptedException, IOException {
-        final String execId = docker.execCreate(containerId, new String[]{command}, attachStdin(), attachStdout(), attachStderr()).id();
+        final String execId = docker.execCreate(containerId, new String[]{command}, tty(), attachStdin(), attachStdout(), attachStderr()).id();
 
         try (final LogStream stream = docker.execStart(execId)) {
             stream.attach(stdout, stderr);
         }
 
         return execId;
+    }
+
+
+    /**
+     * Get the exit code of a completed command.
+     *
+     * @param execId the command's execution ID (returned from {@link #execCommand(String, String, OutputStream, OutputStream)})
+     * @return the command's exit code
+     * @throws DockerException      if a Docker server error occurs
+     * @throws InterruptedException if the thread is interrupted
+     */
+    public int getCommandExitCode(String execId) throws DockerException, InterruptedException {
+        return docker.execInspect(execId).exitCode();
     }
 
 

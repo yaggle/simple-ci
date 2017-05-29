@@ -4,11 +4,11 @@ import co.yaggle.simpleci.server.model.Pipeline;
 import co.yaggle.simpleci.server.model.Task;
 import org.junit.Test;
 
-import static co.yaggle.simpleci.server.TestUtil.getDirectory;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
+import static co.yaggle.simpleci.server.TestUtil.*;
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class ConfigFileReaderTest {
 

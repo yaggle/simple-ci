@@ -9,6 +9,7 @@ import co.yaggle.simpleci.core.pipeline.event.TaskOutputChannel;
 import com.spotify.docker.client.exceptions.DockerException;
 import lombok.RequiredArgsConstructor;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -28,15 +29,16 @@ public class PipelineRunner {
      * via events published in the event queue.
      * </p>
      *
-     * @param pipeline   a build pipeline
-     * @param eventQueue an event queue into which task-related events will be published
+     * @param pipeline           a build pipeline
+     * @param mountFromDirectory the absolute path to the local directory to mount
+     * @param eventQueue         an event queue into which task-related events will be published
      */
-    public void launchPipeline(Pipeline pipeline, BlockingQueue<PipelineEvent> eventQueue) {
+    public void launchPipeline(Pipeline pipeline, File mountFromDirectory, BlockingQueue<PipelineEvent> eventQueue) {
 
         // Start a container from the pipeline's image ID.
         final String containerId;
         try {
-            containerId = containerClient.createContainer(pipeline.getImage());
+            containerId = containerClient.createContainer(pipeline.getImage(), mountFromDirectory.getCanonicalPath(), pipeline.getVolume());
         } catch (DockerException e) {
             eventQueue.add(ImageLoadFailedEvent
                                    .builder()
@@ -51,9 +53,18 @@ public class PipelineRunner {
                                    .message("Thread interrupted while loading Docker image")
                                    .build());
             return;
+        } catch (IOException e) {
+            eventQueue.add(ImageLoadFailedEvent
+                                   .builder()
+                                   .timestamp(ZonedDateTime.now())
+                                   .message("Cannot get canonical path of project root directory")
+                                   .build());
+            return;
         }
 
         launchTasks(containerId, pipeline.getTasks(), eventQueue, new ConcurrentHashMap<String, Object>().keySet());
+
+        // TODO: Ensure the container is shutdown when no more tasks remain.
     }
 
 
@@ -141,6 +152,7 @@ public class PipelineRunner {
             return -1;
         }
     }
+
 
     private final ContainerClient containerClient;
 }

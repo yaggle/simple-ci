@@ -7,7 +7,9 @@ import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerState;
+import com.spotify.docker.client.messages.HostConfig;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -23,16 +25,29 @@ public class ContainerClient {
     /**
      * Create a container from an image
      *
-     * @param image the container's image ID from DockerHub
+     * @param image              the container's image ID from DockerHub
+     * @param mountFromDirectory the absolute path to the local directory to mount
+     * @param mountToDirectory   the absolute path to the target (inside the container) directory to mount
      * @return the new container's ID
      * @throws DockerException      if an error occurred while creating the container
      * @throws InterruptedException if the thread was interrupted while creating the container
      */
-    public String createContainer(String image) throws DockerException, InterruptedException {
+    public String createContainer(String image, String mountFromDirectory, String mountToDirectory) throws DockerException, InterruptedException {
+        HostConfig hostConfig = HostConfig
+                .builder()
+                .appendBinds(HostConfig.Bind
+                                     .from(mountFromDirectory)
+                                     .to(mountToDirectory)
+                                     .readOnly(false)
+                                     .noCopy(true)
+                                     .build())
+                .build();
+
         return docker
                 .createContainer(ContainerConfig
                                          .builder()
                                          .image(image)
+                                         .hostConfig(hostConfig)
                                          .build())
                 .id();
     }

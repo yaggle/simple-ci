@@ -24,6 +24,7 @@ public class PipelineParserTest {
         PipelineElement pipelineElement = PipelineParser.parsePipeline(getDirectory("/test-case-1"));
 
         assertThat(pipelineElement.getImage(), is("node:7.10.0"));
+        assertThat(pipelineElement.getVolume(), is("/root"));
         assertThat(pipelineElement.getTasks().size(), is(9));
 
         List<TaskElement> expectedTaskElements = asList(

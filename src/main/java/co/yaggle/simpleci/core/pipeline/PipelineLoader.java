@@ -38,6 +38,7 @@ public class PipelineLoader {
         return Pipeline
                 .builder()
                 .image(pipelineElement.getImage())
+                .volume(pipelineElement.getVolume())
                 .tasks(tasks)
                 .build();
     }

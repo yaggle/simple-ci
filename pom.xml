@@ -52,7 +52,6 @@
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.spotify</groupId>
 			<artifactId>docker-client</artifactId>
@@ -102,6 +101,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.jfrog.buildinfo</groupId>
 				<artifactId>artifactory-maven-plugin</artifactId>

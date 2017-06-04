@@ -19,6 +19,7 @@ public class PipelineLoaderTest {
         Pipeline pipeline = PipelineLoader.loadPipeline(getDirectory("/test-case-1"));
 
         assertThat(pipeline.getImage(), is("node:7.10.0"));
+        assertThat(pipeline.getVolume(), is("/root"));
         assertThat(pipeline.getTasks().size(), is(1));
 
         Task installTask = pipeline.getTasks().get(0);

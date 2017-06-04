@@ -20,6 +20,7 @@
 				</xsd:element>
 			</xsd:sequence>
 			<xsd:attribute name="image" type="xsd:string" use="required"/>
+			<xsd:attribute name="volume" type="xsd:string" use="required"/>
 		</xsd:complexType>
 	</xsd:element>
 

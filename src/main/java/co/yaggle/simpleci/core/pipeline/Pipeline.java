@@ -13,14 +13,18 @@ import static org.apache.commons.lang3.StringUtils.*;
 public class Pipeline {
 
     @Builder
-    private Pipeline(String image, List<Task> tasks) {
+    private Pipeline(String image, String volume, List<Task> tasks) {
         checkArgument(!isBlank(image));
+        checkArgument(!isBlank(volume));
 
         this.image = image;
+        this.volume = volume;
         this.tasks = ImmutableList.copyOf(checkNotNull(tasks));
     }
 
     private String image;
+
+    private String volume;
 
     /** The starting tasks (not necessarily all the tasks) */
     private List<Task> tasks;

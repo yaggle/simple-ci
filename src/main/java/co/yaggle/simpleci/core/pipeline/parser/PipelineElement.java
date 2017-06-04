@@ -16,5 +16,8 @@ public class PipelineElement {
     private String image;
 
     @NonNull
+    private String volume;
+
+    @NonNull
     private List<TaskElement> tasks;
 }

@@ -29,8 +29,8 @@ public class PipelineParser {
      * configuration file is present and that it's valid.
      *
      * @param projectRootDirectory the root directory of the project to validate
-     * @throws SAXException                      if the XML is not valid
-     * @throws IOException                       if an error occurred while reading
+     * @throws SAXException             if the XML is not valid
+     * @throws IOException              if an error occurred while reading
      * @throws MissingPipelineException if the configuration file is missing
      */
     public static void validatePipeline(File projectRootDirectory) throws SAXException, IOException, MissingPipelineException {
@@ -76,6 +76,7 @@ public class PipelineParser {
         // Get pipeline element
         Element pipelineElement = document.getDocumentElement();
         String dockerImageName = pipelineElement.getAttribute(IMAGE_ATTR);
+        String volume = pipelineElement.getAttribute(VOLUME_ATTR);
 
         List<TaskElement> tasks = elementsInside(pipelineElement)
                 .stream()
@@ -85,6 +86,7 @@ public class PipelineParser {
         return PipelineElement
                 .builder()
                 .image(dockerImageName)
+                .volume(volume)
                 .tasks(tasks)
                 .build();
     }
@@ -123,6 +125,7 @@ public class PipelineParser {
     private static final String ID_ATTR = "id";
     private static final String NAME_ATTR = "name";
     private static final String IMAGE_ATTR = "image";
+    private static final String VOLUME_ATTR = "volume";
     private static final String BRANCH_ATTR = "branch";
     private static final String DEPENDS_ON_ATTR = "dependsOn";
 }

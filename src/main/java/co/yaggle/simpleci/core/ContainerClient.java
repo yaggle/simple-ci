@@ -9,7 +9,6 @@ import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerState;
 import com.spotify.docker.client.messages.HostConfig;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -49,6 +48,8 @@ public class ContainerClient {
                                          .builder()
                                          .image(image)
                                          .hostConfig(hostConfig)
+                                         .entrypoint("/bin/sh", "-c")
+                                         .cmd("tail -f /dev/null")
                                          .build())
                 .id();
 

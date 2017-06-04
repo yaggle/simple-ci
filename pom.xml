@@ -4,22 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.3.RELEASE</version>
-	</parent>
-
 	<groupId>co.yaggle.simpleci</groupId>
-	<artifactId>co.yaggle.simpleci.server</artifactId>
+	<artifactId>co.yaggle.simpleci.core</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-	<name>Simple CI</name>
-	<description>Simple Continuous Integration Server</description>
-	<url>https://github.com/yaggle/simple-ci</url>
+	<name>Simple CI Core</name>
+	<description>Simple Continuous Integration (Core)</description>
+	<url>https://github.com/yaggle/simple-ci-core</url>
 
 	<issueManagement>
-		<url>https://github.com/yaggle/simple-ci/issues</url>
+		<url>https://github.com/yaggle/simple-ci-core/issues</url>
 		<system>GitHub Issues</system>
 	</issueManagement>
 
@@ -32,36 +27,26 @@
 	</licenses>
 
 	<scm>
-		<url>https://github.com/yaggle/simple-ci</url>
-		<connection>scm:git:git@github.com:yaggle/simple-ci.git</connection>
-		<developerConnection>scm:git:git@github.com:yaggle/simple-ci.git</developerConnection>
+		<url>https://github.com/yaggle/simple-ci-core</url>
+		<connection>scm:git:git@github.com:yaggle/simple-ci-core.git</connection>
+		<developerConnection>scm:git:git@github.com:yaggle/simple-ci-core.git</developerConnection>
 	</scm>
 
 	<developers>
 		<developer>
 			<id>yaggle</id>
 			<name>Yaggle Pty Ltd</name>
-			<email>hello@yaggle.co</email>
 			<url>https://github.com/yaggle</url>
 		</developer>
 	</developers>
 
 	<properties>
-		<starter-class>co.yaggle.simpleci.server.Main</starter-class>
 		<java.version>1.8</java.version>
 		<docker-client.version>8.5.0</docker-client.version>
-		<jgit.version>4.7.0.201704051617-r</jgit.version>
-		<hibernate.version>5.2.9.Final</hibernate.version>
 		<commons.lang.version>3.4</commons.lang.version>
-		<jackson.version>2.8.7</jackson.version>
 		<guava.version>21.0</guava.version>
-		<java-jwt.version>3.1.0</java-jwt.version>
-		<springsandwich.version>1.0.1</springsandwich.version>
 		<lombok.version>1.16.6</lombok.version>
 		<mvn-compiler.version>3.3</mvn-compiler.version>
-		<postgresql.version>42.0.0</postgresql.version>
-		<simplejavamail.version>4.2.1</simplejavamail.version>
-		<handlebars.version>4.0.4</handlebars.version>
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
 	</properties>
@@ -75,30 +60,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.eclipse.jgit</groupId>
-			<artifactId>org.eclipse.jgit</artifactId>
-			<version>${jgit.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jdk8</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
@@ -108,51 +69,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>${commons.lang.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.simplejavamail</groupId>
-			<artifactId>simple-java-mail</artifactId>
-			<version>${simplejavamail.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.github.jknack</groupId>
-			<artifactId>handlebars</artifactId>
-			<version>${handlebars.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.auth0</groupId>
-			<artifactId>java-jwt</artifactId>
-			<version>${java-jwt.version}</version>
-		</dependency>
-
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.boot</groupId>-->
-		<!--<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-		<!--</dependency>-->
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-
-		<!--<dependency>-->
-		<!--<groupId>org.flywaydb</groupId>-->
-		<!--<artifactId>flyway-core</artifactId>-->
-		<!--</dependency>-->
-
-		<dependency>
-			<groupId>com.kastkode</groupId>
-			<artifactId>springsandwich</artifactId>
-			<version>${springsandwich.version}</version>
 		</dependency>
 
 		<dependency>
@@ -173,28 +89,19 @@
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-		</dependency>
-
-		<!--<dependency>-->
-		<!--<groupId>com.h2database</groupId>-->
-		<!--<artifactId>h2</artifactId>-->
-		<!--</dependency>-->
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${mvn-compiler.version}</version>
 				<configuration>
-					<executable>true</executable>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.jfrog.buildinfo</groupId>
 				<artifactId>artifactory-maven-plugin</artifactId>

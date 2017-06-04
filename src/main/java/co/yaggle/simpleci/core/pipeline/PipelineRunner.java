@@ -1,10 +1,12 @@
 package co.yaggle.simpleci.core.pipeline;
 
 import co.yaggle.simpleci.core.ContainerClient;
+import co.yaggle.simpleci.core.pipeline.event.ContainerStartedEvent;
 import co.yaggle.simpleci.core.pipeline.event.ImageLoadFailedEvent;
 import co.yaggle.simpleci.core.pipeline.event.PipelineEvent;
 import co.yaggle.simpleci.core.pipeline.event.TaskCommandAbortedEvent;
 import co.yaggle.simpleci.core.pipeline.event.TaskCommandCompletedEvent;
+import co.yaggle.simpleci.core.pipeline.event.TaskCommandStartedEvent;
 import co.yaggle.simpleci.core.pipeline.event.TaskOutputChannel;
 import com.spotify.docker.client.exceptions.DockerException;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +63,12 @@ public class PipelineRunner {
                                    .build());
             return;
         }
+
+        eventQueue.add(ContainerStartedEvent
+                               .builder()
+                               .containerId(containerId)
+                               .timestamp(ZonedDateTime.now())
+                               .build());
 
         launchTasks(containerId, pipeline.getTasks(), eventQueue, new ConcurrentHashMap<String, Object>().keySet());
 
@@ -126,6 +134,15 @@ public class PipelineRunner {
 
         TaskOutputStream stdoutStream = taskOutputStreamFactory.forOutputChannel(TaskOutputChannel.STDOUT);
         TaskOutputStream stderrStream = taskOutputStreamFactory.forOutputChannel(TaskOutputChannel.STDERR);
+
+        eventQueue.add(TaskCommandStartedEvent
+                               .builder()
+                               .timestamp(ZonedDateTime.now())
+                               .containerId(containerId)
+                               .taskId(task.getId())
+                               .commandIndex(commandIndex)
+                               .command(task.getCommands().get(commandIndex))
+                               .build());
 
         try {
             String execId = containerClient.execCommand(containerId, task.getCommands().get(commandIndex), stdoutStream, stderrStream);

@@ -30,4 +30,8 @@ public class TaskCommandStartedEvent implements TaskEvent {
     @NonNull
     @Getter
     private final Integer commandIndex;
+
+    @NonNull
+    @Getter
+    private final String command;
 }

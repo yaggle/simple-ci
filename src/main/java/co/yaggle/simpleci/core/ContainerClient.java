@@ -39,17 +39,22 @@ public class ContainerClient {
                                      .from(mountFromDirectory)
                                      .to(mountToDirectory)
                                      .readOnly(false)
-                                     .noCopy(true)
                                      .build())
                 .build();
 
-        return docker
+        docker.pull(image);
+
+        String containerId = docker
                 .createContainer(ContainerConfig
                                          .builder()
                                          .image(image)
                                          .hostConfig(hostConfig)
                                          .build())
                 .id();
+
+        docker.startContainer(containerId);
+
+        return containerId;
     }
 
 

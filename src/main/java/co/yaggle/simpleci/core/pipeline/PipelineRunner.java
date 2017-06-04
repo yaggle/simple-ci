@@ -70,7 +70,7 @@ public class PipelineRunner {
                                .timestamp(ZonedDateTime.now())
                                .build());
 
-        launchTasks(containerId, pipeline.getTasks(), eventQueue, new ConcurrentHashMap<String, Object>().keySet());
+        launchTasks(containerId, pipeline.getTasks(), eventQueue, ConcurrentHashMap.newKeySet());
 
         // TODO: Ensure the container is shutdown when no more tasks remain.
     }

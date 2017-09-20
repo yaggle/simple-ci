@@ -21,9 +21,5 @@ public class TaskStartedEvent implements TaskEvent {
 
     @NonNull
     @Getter(onMethod = @__(@Override))
-    private final String containerId;
-
-    @NonNull
-    @Getter(onMethod = @__(@Override))
     private final String taskId;
 }

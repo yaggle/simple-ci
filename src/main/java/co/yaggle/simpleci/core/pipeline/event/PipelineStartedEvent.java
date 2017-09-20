@@ -8,18 +8,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.ZonedDateTime;
 
-/**
- * Event fired when a pipeline's task has completed.
- */
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class TaskCompletedEvent implements TaskEvent {
+public class PipelineStartedEvent implements PipelineEvent {
 
     @NonNull
     @Getter(onMethod = @__(@Override))
     private final ZonedDateTime timestamp;
-
-    @NonNull
-    @Getter(onMethod = @__(@Override))
-    private final String taskId;
 }

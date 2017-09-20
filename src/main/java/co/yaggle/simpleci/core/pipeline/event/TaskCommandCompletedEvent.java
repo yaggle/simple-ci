@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
  */
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class TaskCommandCompletedEvent implements TaskEvent {
+public class TaskCommandCompletedEvent implements RunningTaskEvent {
 
     @NonNull
     @Getter(onMethod = @__(@Override))

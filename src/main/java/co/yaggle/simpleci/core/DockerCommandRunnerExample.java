@@ -60,7 +60,16 @@ public class DockerCommandRunnerExample {
                                                      .readOnly(false)
                                                      .build()))
                         .build()
-                        .runCommand("echo \"Hello :)\"", stdout, stderr);
+                        .runCommand(
+                            "echo \"Hello :)\"",
+                            stdout,
+                            stderr,
+                            containerId -> System.out.println(String.format("Container %s created", containerId)),
+                            containerId -> System.out.println(String.format("Container %s started", containerId)),
+                            containerId -> System.out.println(String.format("Container %s stopped", containerId)),
+                            containerId -> System.out.println(String.format("Container %s deleted", containerId))
+                        )
+                        .getExitCode();
 
                 eventQueue.add(TaskCommandCompletedEvent
                                        .builder()

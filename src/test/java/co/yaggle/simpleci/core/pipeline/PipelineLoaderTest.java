@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class PipelineLoaderTest {
 
     @Test
-    public void testGetBuildConfiguration() throws Exception {
+    public void testGetBuildConfiguration1() throws Exception {
         Pipeline pipeline = PipelineLoader.loadPipeline(getDirectory("/test-case-1"));
 
         assertThat(pipeline.getImage(), is("node:7.10.0"));
@@ -85,82 +85,107 @@ public class PipelineLoaderTest {
 
 
     @Test
-    public void testTaskElementsToTasks() throws Exception {
+    public void testGetBuildConfiguration2() throws Exception {
+        Pipeline pipeline = PipelineLoader.loadPipeline(getDirectory("/test-case-2"));
+
+        assertThat(pipeline.getImage(), is("alpine:3.6"));
+        assertThat(pipeline.getVolume(), is("/root/simple-ci"));
+        assertThat(pipeline.getTasks().size(), is(1));
+
+        Task helloTask = pipeline.getTasks().get(0);
+
+        assertThat(helloTask.getName(), is("Hello"));
+        assertThat(helloTask.getBranch(), is(nullValue()));
+        assertThat(helloTask.getCommands(), is(asList("echo \"hello\"", "echo \"hello\" > /root/simple-ci/hello.txt")));
+        assertThat(helloTask.getNextTasks().size(), is(1));
+        assertThat(helloTask.getNextTasks().get(0).getId(), is("goodbye"));
+
+        Task goodbyeTask = helloTask.getNextTasks().stream().filter(task -> task.getId().equals("goodbye")).findFirst().orElseThrow(RuntimeException::new);
+
+        assertThat(goodbyeTask.getName(), is("Goodbye"));
+        assertThat(goodbyeTask.getBranch(), is(nullValue()));
+        assertThat(goodbyeTask.getCommands(), is(asList("echo \"goodbye\"", "echo \"goodbye\" > /root/simple-ci/goodbye.txt")));
+        assertTrue(goodbyeTask.getNextTasks().isEmpty());
+    }
+
+
+    @Test
+    public void testTaskElementsToTasks1() throws Exception {
         List<TaskElement> taskElements = asList(
-                TaskElement
-                        .builder()
-                        .id("install")
-                        .name("Install")
-                        .dependsOn(new ArrayList<>())
-                        .branch(null)
-                        .commands(singletonList("yarn"))
-                        .build(),
-                TaskElement
-                        .builder()
-                        .id("eslint")
-                        .name("ES Lint")
-                        .dependsOn(singletonList("install"))
-                        .branch(null)
-                        .commands(singletonList("npm run eslint"))
-                        .build(),
-                TaskElement
-                        .builder()
-                        .id("sasslint")
-                        .name("Sass Lint")
-                        .dependsOn(singletonList("install"))
-                        .branch(null)
-                        .commands(singletonList("npm run sasslint"))
-                        .build(),
-                TaskElement
-                        .builder()
-                        .id("preCompileTest")
-                        .name("Pre-compile Test")
-                        .dependsOn(singletonList("install"))
-                        .branch(null)
-                        .commands(singletonList("npm run test-source"))
-                        .build(),
-                TaskElement
-                        .builder()
-                        .id("compile")
-                        .name("Compile")
-                        .dependsOn(singletonList("install"))
-                        .branch(null)
-                        .commands(singletonList("npm run build"))
-                        .build(),
-                TaskElement
-                        .builder()
-                        .id("postCompileTest")
-                        .name("Post-compile Test")
-                        .dependsOn(singletonList("compile"))
-                        .branch(null)
-                        .commands(singletonList("npm run test-bundle"))
-                        .build(),
-                TaskElement
-                        .builder()
-                        .id("uploadArtifacts")
-                        .name("Upload artifacts")
-                        .dependsOn(asList("eslint", "sasslint", "preCompileTest", "postCompileTest"))
-                        .branch("^(master|develop|qa)$")
-                        .commands(asList(
-                                "tar zcf mylib-$GIT_HASH.tar.gz dist",
-                                "scp -i $PRIVATE_KEY_PATH mylib-$GIT_HASH.tar.gz artifacts@upload.example.com"))
-                        .build(),
-                TaskElement
-                        .builder()
-                        .id("deployNonProd")
-                        .name("Deploy (non-prod)")
-                        .dependsOn(singletonList("uploadArtifacts"))
-                        .branch("^(develop|qa)$")
-                        .commands(singletonList("./deploy.sh"))
-                        .build(),
-                TaskElement
-                        .builder()
-                        .id("deployProd")
-                        .name("Deploy to prod")
-                        .dependsOn(singletonList("uploadArtifacts"))
-                        .branch("^master$")
-                        .commands(singletonList("./deploy-prod.sh"))
-                        .build());
+            TaskElement
+                .builder()
+                .id("install")
+                .name("Install")
+                .dependsOn(new ArrayList<>())
+                .branch(null)
+                .commands(singletonList("yarn"))
+                .build(),
+            TaskElement
+                .builder()
+                .id("eslint")
+                .name("ES Lint")
+                .dependsOn(singletonList("install"))
+                .branch(null)
+                .commands(singletonList("npm run eslint"))
+                .build(),
+            TaskElement
+                .builder()
+                .id("sasslint")
+                .name("Sass Lint")
+                .dependsOn(singletonList("install"))
+                .branch(null)
+                .commands(singletonList("npm run sasslint"))
+                .build(),
+            TaskElement
+                .builder()
+                .id("preCompileTest")
+                .name("Pre-compile Test")
+                .dependsOn(singletonList("install"))
+                .branch(null)
+                .commands(singletonList("npm run test-source"))
+                .build(),
+            TaskElement
+                .builder()
+                .id("compile")
+                .name("Compile")
+                .dependsOn(singletonList("install"))
+                .branch(null)
+                .commands(singletonList("npm run build"))
+                .build(),
+            TaskElement
+                .builder()
+                .id("postCompileTest")
+                .name("Post-compile Test")
+                .dependsOn(singletonList("compile"))
+                .branch(null)
+                .commands(singletonList("npm run test-bundle"))
+                .build(),
+            TaskElement
+                .builder()
+                .id("uploadArtifacts")
+                .name("Upload artifacts")
+                .dependsOn(asList("eslint", "sasslint", "preCompileTest", "postCompileTest"))
+                .branch("^(master|develop|qa)$")
+                .commands(asList(
+                    "tar zcf mylib-$GIT_HASH.tar.gz dist",
+                    "scp -i $PRIVATE_KEY_PATH mylib-$GIT_HASH.tar.gz artifacts@upload.example.com"))
+                .build(),
+            TaskElement
+                .builder()
+                .id("deployNonProd")
+                .name("Deploy (non-prod)")
+                .dependsOn(singletonList("uploadArtifacts"))
+                .branch("^(develop|qa)$")
+                .commands(singletonList("./deploy.sh"))
+                .build(),
+            TaskElement
+                .builder()
+                .id("deployProd")
+                .name("Deploy to prod")
+                .dependsOn(singletonList("uploadArtifacts"))
+                .branch("^master$")
+                .commands(singletonList("./deploy-prod.sh"))
+                .build());
 
         List<Task> tasks = PipelineLoader.taskElementsToTasks(taskElements);
 
@@ -223,5 +248,45 @@ public class PipelineLoaderTest {
         assertThat(deployProdTask.getBranch(), is("^master$"));
         assertThat(deployProdTask.getCommands(), is(singletonList("./deploy-prod.sh")));
         assertThat(deployProdTask.getNextTasks().size(), is(0));
+    }
+
+
+    @Test
+    public void testTaskElementsToTasks2() throws Exception {
+        List<TaskElement> taskElements = asList(
+            TaskElement
+                .builder()
+                .id("hello")
+                .name("Hello")
+                .dependsOn(new ArrayList<>())
+                .branch(null)
+                .commands(asList("echo \"hello\"", "echo \"hello\" > /root/simple-ci/hello.txt"))
+                .build(),
+            TaskElement
+                .builder()
+                .id("goodbye")
+                .name("Goodbye")
+                .dependsOn(singletonList("hello"))
+                .branch(null)
+                .commands(asList("echo \"goodbye\"", "echo \"goodbye\" > /root/simple-ci/goodbye.txt"))
+                .build()
+        );
+
+        List<Task> tasks = PipelineLoader.taskElementsToTasks(taskElements);
+
+        assertThat(tasks.size(), is(1));
+
+        Task helloTask = tasks.get(0);
+        assertThat(helloTask.getName(), is("Hello"));
+        assertThat(helloTask.getBranch(), is(nullValue()));
+        assertThat(helloTask.getCommands(), is(asList("echo \"hello\"", "echo \"hello\" > /root/simple-ci/hello.txt")));
+        assertThat(helloTask.getNextTasks().size(), is(1));
+        assertThat(helloTask.getNextTasks().get(0).getId(), is("goodbye"));
+
+        Task goodbyeTask = tasks.get(0).getNextTasks().stream().filter(task -> task.getId().equals("goodbye")).findFirst().orElseThrow(RuntimeException::new);
+        assertThat(goodbyeTask.getName(), is("Goodbye"));
+        assertThat(goodbyeTask.getBranch(), is(nullValue()));
+        assertThat(goodbyeTask.getCommands(), is(asList("echo \"goodbye\"", "echo \"goodbye\" > /root/simple-ci/goodbye.txt")));
+        assertTrue(goodbyeTask.getNextTasks().isEmpty());
     }
 }

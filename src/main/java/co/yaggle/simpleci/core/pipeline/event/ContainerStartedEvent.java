@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.ZonedDateTime;
 
 /**
- * Event fired when a pipeline's Docker container has started.
+ * Event fired when a Docker container in a pipeline has started.
  */
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

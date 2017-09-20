@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<pipeline image="alpine:3.6"
+          volume="/root/simple-ci"
+          xmlns="https://yaggle.co/SIMPLECI/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="https://yaggle.co/SIMPLECI/1.0.0 https://yaggle.co/xsd/simple-ci-1.0.0.xsd">
+    <task id="hello" name="Hello">
+        <![CDATA[
+            echo "hello"
+            echo "hello" > /root/simple-ci/hello.txt
+        ]]>
+    </task>
+    <task id="goodbye" dependsOn="hello" name="Goodbye">
+        <![CDATA[
+            echo "goodbye"
+            echo "goodbye" > /root/simple-ci/goodbye.txt
+        ]]>
+    </task>
+</pipeline>
